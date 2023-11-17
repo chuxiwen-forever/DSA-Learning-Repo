@@ -1,5 +1,6 @@
 package com.liu.dynamic.array;
 
+
 public class DynamicIntArrayList {
 
     private int size;
