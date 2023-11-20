@@ -1,9 +1,9 @@
 package com.liu.dynamic.array;
 
-import com.liu.dynamic.DynamicList;
+import com.liu.dynamic.AbstractDynamicList;
 
 @SuppressWarnings("all")
-public class DynamicArrayList<E> implements DynamicList<E> {
+public class DynamicArrayList<E> extends AbstractDynamicList<E> {
 
     private int size;
 
@@ -11,34 +11,12 @@ public class DynamicArrayList<E> implements DynamicList<E> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private static final int ELEMENT_NOT_FOUND = -1;
-
     public DynamicArrayList() {
         this(DEFAULT_CAPACITY);
     }
 
     public DynamicArrayList(int capacity) {
         elements = new Object[Math.max(DEFAULT_CAPACITY, capacity)];
-    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    public boolean contains(E element) {
-        return indexOf(element) != ELEMENT_NOT_FOUND;
-    }
-
-    @Override
-    public void add(E element) {
-        add(size, element);
     }
 
     @Override
@@ -96,22 +74,6 @@ public class DynamicArrayList<E> implements DynamicList<E> {
             elements[i] = null;
         }
         size = 0;
-    }
-
-    private void checkIndexForAdd(int index) {
-        if (index < 0 || index > size) {
-            outOfBounds(index);
-        }
-    }
-
-    private void checkIndex(int index) {
-        if (index < 0 || index >= size) {
-            outOfBounds(index);
-        }
-    }
-
-    private void outOfBounds(int index) {
-        throw new IndexOutOfBoundsException(String.format("Index is %s, But size is %s", index, size));
     }
 
     private void ensureCapacity(int capacity) {

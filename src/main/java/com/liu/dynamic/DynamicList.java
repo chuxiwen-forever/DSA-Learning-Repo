@@ -1,6 +1,8 @@
 package com.liu.dynamic;
 
 public interface DynamicList<E> {
+
+    static final int ELEMENT_NOT_FOUND = -1;
     // 返回数组大小
     int size();
 
