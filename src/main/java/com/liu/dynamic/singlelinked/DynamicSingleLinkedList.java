@@ -3,6 +3,7 @@ package com.liu.dynamic.singlelinked;
 import com.liu.dynamic.AbstractDynamicList;
 
 // 单向链表
+@SuppressWarnings("all")
 public class DynamicSingleLinkedList<E> extends AbstractDynamicList<E> {
 
     private Node<E> first;
