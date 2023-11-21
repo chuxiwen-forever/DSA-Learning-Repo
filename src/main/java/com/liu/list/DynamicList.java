@@ -1,4 +1,4 @@
-package com.liu.dynamic;
+package com.liu.list;
 
 public interface DynamicList<E> {
 

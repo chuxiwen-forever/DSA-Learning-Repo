@@ -1,12 +1,13 @@
-package com.liu.dynamic.linked;
+package com.liu.list.circlelinked;
 
-import com.liu.dynamic.AbstractDynamicList;
+import com.liu.list.AbstractDynamicList;
 
-// 双向链表
-public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
+@SuppressWarnings("all")
+public class DynamicCircleLinkedList<E> extends AbstractDynamicList<E> {
 
     private Node<E> first;
     private Node<E> last;
+    private Node<E> current;
 
     @Override
     public E get(int index) {
@@ -15,9 +16,8 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
 
     @Override
     public E set(int index, E element) {
-        Node<E> node = node(index);
-        E old = node.element;
-        node.element = element;
+        E old = node(index).element;
+        node(index).element = element;
         return old;
     }
 
@@ -26,21 +26,23 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
         checkIndexForAdd(index);
         if (index == size) {
             Node<E> oldLast = last;
-            last = new Node<>(oldLast, element, null);
+            last = new Node<>(element, oldLast, first);
             if (oldLast == null) {
                 first = last;
+                first.next = first;
+                first.prev = first;
             } else {
                 oldLast.next = last;
+                first.prev = last;
             }
         } else {
             Node<E> next = node(index);
             Node<E> prev = next.prev;
-            Node<E> node = new Node<>(prev, element, next);
-            node.prev = node;
-            if (prev == null) {
+            Node<E> node = new Node<>(element, prev, next);
+            next.prev = node;
+            prev.next = node;
+            if (next == first) {
                 first = node;
-            } else {
-                prev.next = node;
             }
         }
         size++;
@@ -49,18 +51,26 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
     @Override
     public E remove(int index) {
         checkIndex(index);
-        Node<E> node = node(index);
-        Node<E> prev = node.prev;
-        Node<E> next = node.next;
-        if (prev == null) {
-            first = next;
+        return remove(node(index));
+    }
+
+    public E remove(Node<E> node) {
+        if (size == 1) {
+            first = null;
+            last = null;
         } else {
+            Node<E> prev = node.prev;
+            Node<E> next = node.next;
             prev.next = next;
-        }
-        if (next == null) {
-            last = prev;
-        } else {
             next.prev = prev;
+
+            if (node == first) {
+                first = next;
+            }
+
+            if (node == last) {
+                last = prev;
+            }
         }
         size--;
         return node.element;
@@ -68,14 +78,13 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
 
     @Override
     public int indexOf(E element) {
+        Node<E> node = first;
         if (element == null) {
-            Node<E> node = first;
             for (int i = 0; i < size; i++) {
                 if (node.element == null) return i;
                 node = node.next;
             }
         } else {
-            Node<E> node = first;
             for (int i = 0; i < size; i++) {
                 if (element.equals(node.element)) return i;
                 node = node.next;
@@ -91,21 +100,44 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
         last = null;
     }
 
+    public E remove() {
+        if (current == null) return null;
+        Node<E> next = current.next;
+        E element = remove(current);
+        if (size == 0) {
+            current = null;
+        } else {
+            current = next;
+        }
+        return element;
+    }
+
+
+    public void reset() {
+        current = first;
+    }
+
+    public E next() {
+        if (current == null) return null;
+        current = current.next;
+        return current.element;
+    }
+
     private Node<E> node(int index) {
         checkIndex(index);
-        Node<E> node;
         if (index < (size >> 1)) {
-            node = first;
+            Node<E> node = first;
             for (int i = 0; i < index; i++) {
                 node = node.next;
             }
+            return node;
         } else {
-            node = last;
+            Node<E> node = last;
             for (int i = size - 1; i > index; i--) {
                 node = node.prev;
             }
+            return node;
         }
-        return node;
     }
 
     @Override
@@ -115,7 +147,7 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
         Node<E> node = first;
         for (int i = 0; i < size; i++) {
             if (i != 0) builder.append(", ");
-            builder.append(node);
+            builder.append(node.element);
             node = node.next;
         }
         builder.append("]");
@@ -127,9 +159,9 @@ public class DynamicLinkedList<E> extends AbstractDynamicList<E> {
         Node<E> prev;
         Node<E> next;
 
-        public Node(Node<E> prev, E element, Node<E> next) {
-            this.prev = prev;
+        public Node(E element, Node<E> prev, Node<E> next) {
             this.element = element;
+            this.prev = prev;
             this.next = next;
         }
 

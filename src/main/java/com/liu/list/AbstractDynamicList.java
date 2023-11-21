@@ -1,4 +1,4 @@
-package com.liu.dynamic;
+package com.liu.list;
 
 public abstract class AbstractDynamicList<E> implements DynamicList<E> {
     protected int size;

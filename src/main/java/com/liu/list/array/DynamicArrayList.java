@@ -1,6 +1,6 @@
-package com.liu.dynamic.array;
+package com.liu.list.array;
 
-import com.liu.dynamic.AbstractDynamicList;
+import com.liu.list.AbstractDynamicList;
 
 @SuppressWarnings("all")
 public class DynamicArrayList<E> extends AbstractDynamicList<E> {

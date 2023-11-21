@@ -1,9 +1,10 @@
-package com.liu.dynamic.singlecirclelinked;
+package com.liu.list.singlelinked;
 
-import com.liu.dynamic.AbstractDynamicList;
+import com.liu.list.AbstractDynamicList;
 
+// 单向链表
 @SuppressWarnings("all")
-public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
+public class DynamicSingleLinkedList<E> extends AbstractDynamicList<E> {
 
     private Node<E> first;
 
@@ -14,9 +15,8 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
 
     @Override
     public E set(int index, E element) {
-        Node<E> node = node(index);
-        E old = node.element;
-        node.element = element;
+        E old = node(index).element;
+        node(index).element = element;
         return old;
     }
 
@@ -24,10 +24,7 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
     public void add(int index, E element) {
         checkIndexForAdd(index);
         if (index == 0) {
-            Node<E> newFirst = new Node<>(element, first);
-            Node<E> last = (size == 0) ? newFirst : node(size - 1);
-            last.next = newFirst;
-            first = newFirst;
+            first = new Node<>(element, first);
         } else {
             Node<E> prev = node(index - 1);
             prev.next = new Node<>(element, prev.next);
@@ -40,13 +37,7 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
         checkIndex(index);
         Node<E> node = first;
         if (index == 0) {
-            if (size == 1) {
-                first = null;
-            } else {
-                Node<E> last = node(size - 1);
-                first = first.next;
-                last.next = first;
-            }
+            first = first.next;
         } else {
             Node<E> prev = node(index - 1);
             node = prev.next;
@@ -66,7 +57,7 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
             }
         } else {
             for (int i = 0; i < size; i++) {
-                if (element.equals(node.element)) return i;
+                if (node.element.equals(element)) return i;
                 node = node.next;
             }
         }
@@ -77,15 +68,6 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
     public void clear() {
         size = 0;
         first = null;
-    }
-
-    private Node<E> node(int index) {
-        checkIndex(index);
-        Node<E> node = first;
-        for (int i = 0; i < index; i++) {
-            node = node.next;
-        }
-        return node;
     }
 
     @Override
@@ -102,6 +84,15 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
         return builder.toString();
     }
 
+    private Node<E> node(int index) {
+        checkIndex(index);
+        Node<E> node = first;
+        for (int i = 0; i < index; i++) {
+            node = node.next;
+        }
+        return node;
+    }
+
     private static class Node<E> {
         E element;
         Node<E> next;
@@ -109,11 +100,6 @@ public class DynamicSingleCircleLinkedList<E> extends AbstractDynamicList<E> {
         public Node(E element, Node<E> next) {
             this.element = element;
             this.next = next;
-        }
-
-        @Override
-        public String toString() {
-            return element + "_" + next.element;
         }
     }
 }
